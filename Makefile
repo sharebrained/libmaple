@@ -12,6 +12,7 @@ PRODUCT_ID := 0003
 # FIXME the error LED config needs to be in wirish/ instead
 ifeq ($(BOARD), maple)
    MCU := STM32F103RB
+   CPU_ARCH := -mcpu=cortex-m3 -mthumb -march=armv7-m
    PRODUCT_ID := 0003
    ERROR_LED_PORT := GPIOA
    ERROR_LED_PIN  := 5
@@ -19,6 +20,7 @@ ifeq ($(BOARD), maple)
 endif
 ifeq ($(BOARD), maple_native)
    MCU := STM32F103ZE
+   CPU_ARCH := -mcpu=cortex-m3 -mthumb -march=armv7-m
    PRODUCT_ID := 0003
    ERROR_LED_PORT := GPIOC
    ERROR_LED_PIN  := 15
@@ -26,6 +28,7 @@ ifeq ($(BOARD), maple_native)
 endif
 ifeq ($(BOARD), maple_mini)
    MCU := STM32F103CB
+   CPU_ARCH := -mcpu=cortex-m3 -mthumb -march=armv7-m
    PRODUCT_ID := 0003
    ERROR_LED_PORT := GPIOB
    ERROR_LED_PIN  := 1
@@ -33,6 +36,7 @@ ifeq ($(BOARD), maple_mini)
 endif
 ifeq ($(BOARD), maple_RET6)
    MCU := STM32F103RE
+   CPU_ARCH := -mcpu=cortex-m3 -mthumb -march=armv7-m
    PRODUCT_ID := 0003
    ERROR_LED_PORT := GPIOA
    ERROR_LED_PIN := 5
@@ -70,17 +74,17 @@ GLOBAL_FLAGS    := -D$(VECT_BASE_ADDR)					     \
 		   -DERROR_LED_PORT=$(ERROR_LED_PORT)			     \
 		   -DERROR_LED_PIN=$(ERROR_LED_PIN)			     \
 		   -D$(DENSITY) 
-GLOBAL_CFLAGS   := -Os -g3 -gdwarf-2  -mcpu=cortex-m3 -mthumb -march=armv7-m \
+GLOBAL_CFLAGS   := -Os -g3 -gdwarf-2 $(CPU_ARCH) \
 		   -nostdlib -ffunction-sections -fdata-sections	     \
 		   -Wl,--gc-sections $(GLOBAL_FLAGS)
 GLOBAL_CXXFLAGS := -fno-rtti -fno-exceptions -Wall $(GLOBAL_FLAGS)
-GLOBAL_ASFLAGS  := -mcpu=cortex-m3 -march=armv7-m -mthumb		     \
+GLOBAL_ASFLAGS  := $(CPU_ARCH)		     \
 		   -x assembler-with-cpp $(GLOBAL_FLAGS)
 
 LDDIR    := $(SUPPORT_PATH)/ld
 LDFLAGS  = -T$(LDDIR)/$(LDSCRIPT) -L$(LDDIR)    \
-            -mcpu=cortex-m3 -mthumb -Xlinker     \
-            --gc-sections --print-gc-sections --march=armv7-m -Wall
+            $(CPU_ARCH) -Xlinker     \
+            --gc-sections --print-gc-sections -Wall
 
 # Set up build rules and some useful templates
 include $(SUPPORT_PATH)/make/build-rules.mk
