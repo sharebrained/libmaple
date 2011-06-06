@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := sketch
 
 # Valid BOARDs: maple, maple_native, ...
-BOARD ?= maple
+BOARD ?= nutiny
 MEMORY_TARGET ?= flash
 
 # USB ID for DFU upload
@@ -41,6 +41,14 @@ ifeq ($(BOARD), maple_RET6)
    ERROR_LED_PORT := GPIOA
    ERROR_LED_PIN := 5
    DENSITY := STM32_HIGH_DENSITY
+endif
+ifeq ($(BOARD), nutiny)
+   MCU := NUC120LE3
+   CPU_ARCH := -mcpu=cortex-m0 -mthumb -march=armv6-m
+   PRODUCT_ID := 9999
+   ERROR_LED_PORT := GPIOA
+   ERROR_LED_PIN := 5
+   DENSITY := NUC120_MEDIUM_DENSITY
 endif
 
 # Some target specific things
