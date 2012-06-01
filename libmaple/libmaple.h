@@ -76,6 +76,10 @@
     #define NR_GPIO_PORTS              4
     #define SRAM_SIZE            0x10000
 
+#elif defined(MCU_STM32F205RB)
+
+	#define NR_GPIO_PORTS              4
+	#define SRAM_SIZE             0xC000
 #else
 
 #error "No MCU type specified. Add something like -DMCU_STM32F103RB "   \

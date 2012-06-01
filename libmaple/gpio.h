@@ -47,13 +47,26 @@ extern "C"{
 
 /** GPIO register map type */
 typedef struct gpio_reg_map {
+#if defined(STM32F2xx)
+	__io uint32 MODER;
+	__io uint32 OTYPER;
+	__io uint32 OSPEEDR;
+	__io uint32 PUPDR;
+#elif defined(STM32F1xx)
     __io uint32 CRL;      /**< Port configuration register low */
     __io uint32 CRH;      /**< Port configuration register high */
+#endif
     __io uint32 IDR;      /**< Port input data register */
     __io uint32 ODR;      /**< Port output data register */
     __io uint32 BSRR;     /**< Port bit set/reset register */
+#if defined(STM32F2xx)
+    __io uint32 LCKR;     /**< Port configuration lock register */
+    __io uint32 AFRL;
+    __io uint32 AFRH;
+#elif defined(STM32F1xx)
     __io uint32 BRR;      /**< Port bit reset register */
     __io uint32 LCKR;     /**< Port configuration lock register */
+#endif
 } gpio_reg_map;
 
 /**
@@ -98,6 +111,19 @@ extern gpio_dev gpiog;
 extern gpio_dev* const GPIOG;
 #endif
 
+#if defined(STM32F2xx)
+#define GPIOA_BASE                      ((struct gpio_reg_map*)0x40020000)
+#define GPIOB_BASE                      ((struct gpio_reg_map*)0x40020400)
+#define GPIOC_BASE                      ((struct gpio_reg_map*)0x40020800)
+#define GPIOD_BASE                      ((struct gpio_reg_map*)0x40020C00)
+#if 0
+#define GPIOE_BASE                      ((struct gpio_reg_map*)0x40021000)
+#define GPIOF_BASE                      ((struct gpio_reg_map*)0x40021400)
+#define GPIOG_BASE                      ((struct gpio_reg_map*)0x40021800)
+#define GPIOH_BASE                      ((struct gpio_reg_map*)0x40021C00)
+#define GPIOI_BASE                      ((struct gpio_reg_map*)0x40022000)
+#endif
+#elif defined(STM32F1xx)
 /** GPIO port A register map base pointer */
 #define GPIOA_BASE                      ((struct gpio_reg_map*)0x40010800)
 /** GPIO port B register map base pointer */
@@ -113,6 +139,7 @@ extern gpio_dev* const GPIOG;
 #define GPIOF_BASE                      ((struct gpio_reg_map*)0x40011C00)
 /** GPIO port G register map base pointer */
 #define GPIOG_BASE                      ((struct gpio_reg_map*)0x40012000)
+#endif
 #endif
 
 /*
@@ -187,7 +214,11 @@ static inline void gpio_write_bit(gpio_dev *dev, uint8 pin, uint8 val) {
     if (val) {
         dev->regs->BSRR = BIT(pin);
     } else {
+#if defined(STM32F2xx)
+    	dev->regs->BSRR = BIT(pin) << 16;
+#elif defined(STM32F1xx)
         dev->regs->BRR = BIT(pin);
+#endif
     }
 }
 

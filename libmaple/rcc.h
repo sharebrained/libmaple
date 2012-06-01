@@ -39,19 +39,69 @@ extern "C"{
 /** RCC register map type */
 typedef struct rcc_reg_map {
     __io uint32 CR;             /**< Clock control register */
+#if defined(STM32F2xx)
+    __io uint32 PLLCFGR;
+#endif
     __io uint32 CFGR;           /**< Clock configuration register */
     __io uint32 CIR;            /**< Clock interrupt register */
+#if defined(STM32F2xx)
+    __io uint32 AHB1RSTR;
+    __io uint32 AHB2RSTR;
+    __io uint32 AHB3RSTR;
+    __io uint32 reserved_0x1C;
+#endif
+#if defined(STM32F2xx)
+    __io uint32 APB1RSTR;       /**< APB1 peripheral reset register */
+    __io uint32 APB2RSTR;       /**< APB2 peripheral reset register */
+    __io uint32 reserved_0x28;
+    __io uint32 reserved_0x2C;
+#elif defined(STM32F1xx)
     __io uint32 APB2RSTR;       /**< APB2 peripheral reset register */
     __io uint32 APB1RSTR;       /**< APB1 peripheral reset register */
+#endif
+#if defined(STM32F2xx)
+    __io uint32 AHB1ENR;
+    __io uint32 AHB2ENR;
+    __io uint32 AHB3ENR;
+    __io uint32 reserved_0x3C;
+#elif defined(STM32F1xx)
     __io uint32 AHBENR;         /**< AHB peripheral clock enable register */
+#endif
+#if defined(STM32F2xx)
+    __io uint32 APB1ENR;        /**< APB1 peripheral clock enable register */
+    __io uint32 APB2ENR;        /**< APB2 peripheral clock enable register */
+    __io uint32 reserved_0x48;
+    __io uint32 reserved_0x4C;
+#elif defined(STM32F1xx)
     __io uint32 APB2ENR;        /**< APB2 peripheral clock enable register */
     __io uint32 APB1ENR;        /**< APB1 peripheral clock enable register */
+#endif
+#if defined(STM32F2xx)
+    __io uint32 AHB1LPENR;
+    __io uint32 AHB2LPENR;
+    __io uint32 AHB3LPENR;
+    __io uint32 reserved_0x5C;
+    __io uint32 APB1LPENR;
+    __io uint32 APB2LPENR;
+    __io uint32 reserved_0x68;
+    __io uint32 reserved_0x6C;
+#endif
     __io uint32 BDCR;           /**< Backup domain control register */
     __io uint32 CSR;            /**< Control/status register */
+#if defined(STM32F2xx)
+    __io uint32 reserved_0x78;
+    __io uint32 reserved_0x7C;
+    __io uint32 SSCGR;
+    __io uint32 PLLI2SCFGR;
+#endif
 } rcc_reg_map;
 
 /** RCC register map base pointer */
+#ifdef STM32F1xx
 #define RCC_BASE                        ((struct rcc_reg_map*)0x40021000)
+#elif STM32F2xx
+#define RCC_BASE                        ((struct rcc_reg_map*)0x40023800)
+#endif
 
 /*
  * Register bit definitions
